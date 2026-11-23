@@ -2,7 +2,7 @@
  * 신청서(개발 및 운영계획서) 입력 폼
  * - 유형 탐색 결과에서 "신청서 작성하기"를 누르면 열립니다.
  * - 입력 내용은 이 브라우저(localStorage)에 자동 저장됩니다.
- * - JSON으로 내보내고 불러올 수 있습니다. hwpx 내려받기는 다음 단계에서 붙입니다.
+ * - JSON으로 내보내고 불러올 수 있고, hwpx 내려받기는 js/hwpx-export.js 가 맡습니다.
  */
 (function () {
   const STORAGE_KEY = 'lcc-application-draft-v1';
@@ -345,7 +345,9 @@
         ${body}
       </div>`;
     }).join('');
-    const warn = list.length < T().minModules ? `<p class="warn">이 서식은 모듈을 최소 ${T().minModules}개 작성해야 합니다.</p>` : '';
+    const slots = window.HwpxExport ? window.HwpxExport.SLOTS.modules[typeKey] : list.length;
+    const warn = (list.length < T().minModules ? `<p class="warn">이 서식은 모듈을 최소 ${T().minModules}개 작성해야 합니다.</p>` : '') +
+      (list.length > slots ? `<p class="warn">hwpx 서식에는 ${label} 칸이 ${slots}개뿐이라 ${slots + 1}번째부터는 내려받은 파일에 들어가지 않습니다. 한글에서 표를 복사해 붙여 넣어 주세요.</p>` : '');
     return section('sec-modules', title + guess('modules'), warn + cards + `<button type="button" class="add-btn" data-action="add-module">+ ${label} 추가</button>`, sub);
   }
 
@@ -416,7 +418,7 @@
             <label class="btn-ghost cursor-pointer">JSON 불러오기<input type="file" accept="application/json,.json" id="import-json" class="hidden"/></label>
             <button type="button" class="btn-ghost danger" data-action="reset">모두 지우기</button>
             <button type="button" class="btn-primary" data-action="preview">초안 미리보기</button>
-            <button type="button" class="btn-primary" disabled title="다음 단계에서 hwpx 내려받기를 붙입니다.">hwpx 내려받기 (준비 중)</button>
+            <button type="button" class="btn-primary" data-action="download-hwpx">hwpx 내려받기</button>
           </div>
         </div>
       </div>`;
@@ -624,6 +626,7 @@
       case 'preview': openPreview(); return;
       case 'close-preview': closePreview(); return;
       case 'print-preview': window.print(); return;
+      case 'download-hwpx': downloadHwpx(btn); return;
       case 'export-json': exportJson(); return;
       case 'reset':
         if (!confirmSoft(btn, '입력한 내용을 모두 지웁니다. 한 번 더 누르면 지워집니다.')) return;
@@ -653,6 +656,21 @@
     t.classList.remove('hidden');
     clearTimeout(toastTimer);
     toastTimer = setTimeout(() => t.classList.add('hidden'), 4000);
+  }
+
+  async function downloadHwpx(btn) {
+    const old = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = '만드는 중…';
+    try {
+      const notes = await window.HwpxExport.download(typeKey, data);
+      showToast(notes.length ? 'hwpx를 내려받았습니다. ' + notes.join(' ') : 'hwpx를 내려받았습니다. 한글에서 열어 확인해 주세요.');
+    } catch (e) {
+      showToast('hwpx를 만들지 못했습니다. ' + (e && e.message ? e.message : ''));
+    } finally {
+      btn.disabled = false;
+      btn.textContent = old;
+    }
   }
 
   function exportJson() {
@@ -700,6 +718,7 @@
 
   // 탐색기에서 쓰는 진입점
   window.openApplicationForm = function (key) { renderForm(key); };
+  window.getCurrentDraft = function () { return { type: typeKey, data }; };
   window.getSavedDraftType = function () {
     try { const s = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null'); return s && s.type; } catch (e) { return null; }
   };
