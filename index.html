@@ -39,6 +39,112 @@
       from { opacity: 0; transform: translateY(10px); }
       to { opacity: 1; transform: translateY(0); }
     }
+    main { transition: max-width .25s ease; }
+    main.wide { max-width: 64rem !important; overflow: visible !important; }
+    .hidden { display: none !important; }
+
+    /* ----- 신청서 폼 ----- */
+    .form-top { display:flex; flex-wrap:wrap; justify-content:space-between; gap:1rem; align-items:flex-start; }
+    .type-pill { display:inline-block; background:#008CD6; color:#fff; font-weight:900; font-size:.8rem; padding:.2rem .6rem; border-radius:.5rem; }
+    .form-title { font-size:1.4rem; font-weight:800; margin-top:.4rem; color:#414951; }
+    .form-subtitle { font-size:.78rem; color:#94a3b8; margin-top:.2rem; }
+    .form-actions { display:flex; gap:.5rem; align-items:center; flex-wrap:wrap; }
+    .guess-legend { margin-top:1rem; font-size:.78rem; color:#78590a; background:#fffbeb; border:1px solid #fde68a; padding:.6rem .8rem; border-radius:.75rem; line-height:1.6; }
+    .guess { display:inline-block; margin-left:.35rem; font-size:.65rem; font-weight:800; color:#92400e; background:#fef3c7; border:1px dashed #f59e0b; padding:0 .35rem; border-radius:.35rem; cursor:help; vertical-align:middle; line-height:1.4; }
+    .form-nav { position:sticky; top:0; z-index:20; display:flex; gap:.3rem; overflow-x:auto; background:rgba(255,255,255,.96); backdrop-filter:blur(4px); margin:1rem -0.25rem 0; padding:.6rem .25rem; border-bottom:1px solid #f1f5f9; }
+    .form-nav a { white-space:nowrap; font-size:.78rem; font-weight:700; color:#006BA6; background:#E6F4FC; padding:.3rem .65rem; border-radius:999px; }
+    .form-nav a:hover { background:#008CD6; color:#fff; }
+    .fill-meter { display:flex; align-items:center; gap:.6rem; margin-top:.75rem; font-size:.75rem; color:#64748b; font-weight:700; }
+    .fill-bar { flex:1; height:.4rem; background:#f1f5f9; border-radius:999px; overflow:hidden; }
+    .fill-bar > div { height:100%; background:#008CD6; transition:width .3s; }
+    .fsec { margin-top:2rem; scroll-margin-top:4rem; }
+    .fsec-title { font-size:1.1rem; font-weight:800; color:#414951; padding-bottom:.5rem; border-bottom:2px solid #008CD6; }
+    .fsec-sub { font-size:.8rem; color:#64748b; margin-top:.5rem; line-height:1.6; }
+    .frow { display:grid; grid-template-columns: 11rem 1fr; gap:.75rem; padding:.75rem 0; border-bottom:1px solid #f1f5f9; }
+    .flabel { font-size:.85rem; font-weight:700; color:#414951; padding-top:.45rem; line-height:1.4; }
+    .frow.req .flabel::after { content:' *'; color:#008CD6; }
+    .fbody { min-width:0; }
+    @media (max-width: 640px) { .frow { grid-template-columns: 1fr; gap:.35rem; } .flabel { padding-top:0; } }
+    .inp { width:100%; border:1px solid #e2e8f0; border-radius:.6rem; padding:.45rem .65rem; font-size:.88rem; background:#fff; color:#334155; }
+    .inp:focus { outline:none; border-color:#008CD6; box-shadow:0 0 0 3px rgba(0,140,214,.15); }
+    textarea.inp { resize:vertical; line-height:1.55; }
+    .inp.num { text-align:center; min-width:3.5rem; }
+    .inp.w-auto { width:auto; }
+    .inp.w-16 { width:4rem; } .inp.w-20 { width:5rem; } .inp.w-24 { width:6rem; } .inp.w-32 { width:8rem; } .inp.w-48 { width:12rem; max-width:100%; }
+    .inp::placeholder { color:#b8c2cf; }
+    .chips { display:flex; flex-wrap:wrap; gap:.35rem; }
+    .chip input { position:absolute; opacity:0; pointer-events:none; }
+    .chip span { display:inline-block; font-size:.82rem; font-weight:600; border:1px solid #e2e8f0; color:#475569; padding:.35rem .75rem; border-radius:.6rem; cursor:pointer; background:#fff; }
+    .chip input:checked + span { background:#008CD6; border-color:#008CD6; color:#fff; }
+    .chip input:focus-visible + span { box-shadow:0 0 0 3px rgba(0,140,214,.3); }
+    .cond { margin-top:.5rem; display:flex; align-items:center; gap:.4rem; font-size:.85rem; color:#475569; }
+    .hint { font-size:.75rem; color:#94a3b8; margin-top:.35rem; line-height:1.55; }
+    .warn { font-size:.8rem; color:#b91c1c; background:#fef2f2; padding:.5rem .75rem; border-radius:.6rem; margin-top:.75rem; }
+    .fixed-val { display:inline-block; padding:.35rem .75rem; background:#f1f5f9; border-radius:.6rem; font-weight:700; font-size:.85rem; }
+    .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:.5rem; }
+    @media (max-width: 640px) { .grid2 { grid-template-columns:1fr; } }
+    .stack { display:flex; flex-direction:column; gap:.35rem; }
+    .sublabel { display:block; font-size:.78rem; font-weight:700; color:#64748b; margin-top:.35rem; }
+    .sublabel .inp { margin-top:.2rem; font-weight:400; }
+    .card { border:1px solid #e2e8f0; border-radius:1rem; padding:1rem; margin-top:.9rem; background:#fcfdff; }
+    .card-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:.4rem; color:#414951; }
+    .link-btn { font-size:.78rem; color:#94a3b8; font-weight:700; }
+    .link-btn:hover { color:#dc2626; }
+    .add-btn { margin-top:.6rem; font-size:.82rem; font-weight:700; color:#008CD6; border:1px dashed #7dd3fc; padding:.45rem .9rem; border-radius:.6rem; }
+    .add-btn:hover { background:#E6F4FC; }
+    .consent { margin-top:1rem; font-size:.8rem; color:#475569; background:#f8fafc; padding:.9rem; border-radius:.75rem; line-height:1.6; }
+    .consent .chips { margin-top:.5rem; }
+    .h4 { font-size:.92rem; font-weight:800; color:#414951; margin-top:1.1rem; }
+    .tbl-wrap { overflow-x:auto; margin-top:.5rem; }
+    .tbl { width:100%; border-collapse:collapse; font-size:.83rem; }
+    .tbl th, .tbl td { border:1px solid #e2e8f0; padding:.4rem; vertical-align:top; }
+    .tbl thead th { background:#E6F4FC; color:#006BA6; font-weight:800; text-align:center; }
+    .tbl tbody th { background:#f8fafc; font-weight:700; text-align:center; }
+    .tbl td.cat { font-weight:700; color:#414951; background:#fcfdff; }
+    .tbl td.cat.cont { border-top-color:transparent; }
+    .tbl.weeks td { min-width:9rem; }
+    .chk { display:block; font-size:.8rem; padding:.15rem 0; }
+    .sum { display:inline-block; min-width:3rem; text-align:center; font-weight:900; padding:.3rem; border-radius:.5rem; background:#f1f5f9; }
+    .sum.ok { background:#dcfce7; color:#166534; }
+    .sum.bad { background:#fee2e2; color:#b91c1c; }
+    .lc-counter { margin-top:.75rem; font-size:.83rem; color:#475569; }
+    .ok-badge { margin-left:.3rem; font-size:.72rem; font-weight:800; color:#166534; background:#dcfce7; padding:.1rem .45rem; border-radius:.4rem; }
+    .bad-badge { margin-left:.3rem; font-size:.72rem; font-weight:800; color:#b91c1c; background:#fee2e2; padding:.1rem .45rem; border-radius:.4rem; }
+    .form-footer { position:sticky; bottom:0; z-index:20; margin:2rem -1.5rem -1.5rem; padding:.9rem 1.5rem; background:rgba(255,255,255,.97); border-top:1px solid #e2e8f0; display:flex; flex-wrap:wrap; gap:.6rem; justify-content:space-between; align-items:center; }
+    @media (min-width:640px) { .form-footer { margin:2rem -2.5rem -2.5rem; padding:.9rem 2.5rem; } }
+    .form-footer-btns { display:flex; flex-wrap:wrap; gap:.4rem; }
+    @media (max-width:640px) { .form-footer { position:static; } }
+    .tbl tbody th, .tbl td.cat { min-width:4.5rem; word-break:keep-all; }
+    .tbl thead th { word-break:keep-all; white-space:nowrap; }
+    .save-status { font-size:.75rem; color:#94a3b8; }
+    .btn-primary { font-size:.82rem; font-weight:800; color:#fff; background:#008CD6; padding:.5rem .9rem; border-radius:.65rem; }
+    .btn-primary:hover { background:#006BA6; }
+    .btn-primary:disabled { background:#cbd5e1; cursor:not-allowed; }
+    .btn-ghost { display:inline-block; font-size:.82rem; font-weight:700; color:#475569; border:1px solid #e2e8f0; background:#fff; padding:.5rem .9rem; border-radius:.65rem; }
+    .btn-ghost:hover { background:#f8fafc; }
+    .btn-ghost.danger:hover { color:#dc2626; border-color:#fecaca; }
+    .sr-only { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0,0,0,0); }
+
+    /* ----- 초안 미리보기(문서 모양) ----- */
+    .doc { font-size:.85rem; color:#111827; line-height:1.6; }
+    .doc h1 { font-size:1.15rem; font-weight:800; text-align:center; text-decoration:underline; margin-bottom:1rem; }
+    .doc h2 { font-size:1.02rem; font-weight:800; margin:1.2rem 0 .4rem; }
+    .doc h3 { font-size:.95rem; font-weight:800; margin:1rem 0 .4rem; }
+    .doc h4 { font-size:.9rem; font-weight:700; margin:.9rem 0 .3rem; }
+    .doc table { width:100%; border-collapse:collapse; margin:.3rem 0 .6rem; }
+    .doc th, .doc td { border:1px solid #6b7280; padding:.3rem .45rem; vertical-align:top; }
+    .doc th { background:#f3f4f6; font-weight:700; width:9rem; }
+    .doc .c { text-align:center; }
+    .doc .r { text-align:right; margin-top:1rem; }
+    .doc .empty { color:#d1d5db; }
+    @media print {
+      body.previewing > *:not(#preview-modal) { display:none !important; }
+      body.previewing { background:#fff !important; }
+      body.previewing #preview-modal { position:static; background:none; padding:0; display:block !important; }
+      body.previewing .preview-bar { display:none !important; }
+      body.previewing .preview-sheet { box-shadow:none; max-width:none; border-radius:0; }
+    }
+
     .compass-spin {
       animation: gentleFloat 3s ease-in-out infinite;
     }
@@ -114,6 +220,24 @@
     </div>
   </div>
 
+  <!-- 신청서 초안 미리보기 -->
+  <div id="preview-modal" class="hidden fixed inset-0 z-50 bg-slate-900/60 flex items-start justify-center p-2 sm:p-6 overflow-y-auto">
+    <div class="preview-sheet bg-white rounded-2xl w-full max-w-4xl shadow-2xl fade-in">
+      <div class="preview-bar flex items-center justify-between gap-2 px-5 py-3 border-b border-slate-100 sticky top-0 bg-white rounded-t-2xl">
+        <strong class="text-gnu-charcoal text-sm sm:text-base">신청서 초안 미리보기</strong>
+        <div class="flex gap-2">
+          <button type="button" class="btn-ghost whitespace-nowrap" data-action="print-preview">인쇄 / PDF 저장</button>
+          <button type="button" class="btn-primary whitespace-nowrap" data-action="close-preview">닫기</button>
+        </div>
+      </div>
+      <div id="preview-body" class="doc px-5 sm:px-10 py-6"></div>
+    </div>
+  </div>
+
+  <div id="toast" class="hidden fixed bottom-5 left-1/2 -translate-x-1/2 z-[60] max-w-md w-[calc(100%-2rem)] bg-gnu-charcoal text-white text-sm px-4 py-3 rounded-xl shadow-xl" role="status" aria-live="polite"></div>
+
+  <script src="./js/form-schema.js"></script>
+  <script src="./js/form-app.js"></script>
   <script>
     // 질문 데이터
     const questions = {
@@ -160,15 +284,7 @@
         text: '최종 산출물이 기업과\n연계되어 있나요?',
         subText: '학생들이 한 학기 동안 완성하는 최종 프로젝트 산출물이 기업의 실제 수요·주제와 연계되어 진행되는 방식',
         yes: { type: 'result', target: 'IC_PJBL' },
-        no: { type: 'question', target: 'q3_2' }
-      },
-      q3_2: {
-        step: 5,
-        progress: 95,
-        badge: 'STEP 05 · 재료비 등 학교 지원',
-        text: '학교에서 재료비 등을\n지원받아 프로젝트를 진행하나요?',
-        subText: '시작품·작품 제작을 위해 대학(사업단 등)으로부터 별도의 재료비 및 운영 예산을 지원받아 수행하는 방식',
-        yes: { type: 'result', target: 'CD' },
+        // 캡스톤디자인(CD) 제외: 기존 '재료비 학교 지원' 질문(q3_2) 없이 바로 PjBL
         no: { type: 'result', target: 'PJBL' }
       }
     };
@@ -220,21 +336,12 @@
         tip: '💡 산업체의 요구사항을 반영한 결과물을 학기말에 도출하고 공유하는 산학연계형 프로젝트 수업입니다.',
         icon: `<svg class="w-10 h-10 text-gnu-sky" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>`
       },
-      CD: {
-        code: 'CD',
-        title: '캡스톤디자인',
-        engTitle: 'Capstone Design',
-        tag: '재료비 지원 + 최종 산출물 제작',
-        description: '학교에서 재료비 등을 지원받아 프로젝트를 진행하여 학기말 최종 산출물을 완성하고 공유합니다.',
-        tip: '💡 전공 지식을 바탕으로 기획·설계·제작의 전 과정을 경험하며, 대학의 재료비 지원이 수반되는 유형입니다.',
-        icon: `<svg class="w-10 h-10 text-gnu-sky" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>`
-      },
       NONE: {
         code: 'GUIDE',
         title: '수업 설계 재확인 안내',
         engTitle: 'General Lecture / Redesign Needed',
         tag: '학습자 중심 요소 확인 필요',
-        description: '선택하신 응답 경로는 사전학습 활동(FL), 차시별 문제해결(PBL), 학기말 산출물(PjBL/CD) 요건에 직접 해당하지 않습니다.',
+        description: '선택하신 응답 경로는 사전학습 활동(FL), 차시별 문제해결(PBL), 학기말 산출물(PjBL) 요건에 직접 해당하지 않습니다.',
         tip: '💡 학습자 중심 수업을 개발하고자 하신다면, <strong>① 사전학습 도입 ② 차시별 문제상황 제시 ③ 학기말 산출물 도출</strong> 중 한 가지 이상의 요소를 수업에 반영해 보세요.',
         icon: `<svg class="w-10 h-10 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>`
       }
@@ -248,6 +355,8 @@
     // 초기 시작 화면 렌더링
     function renderStart() {
       historyStack = [];
+      document.querySelector('main').classList.remove('wide');
+      const savedType = window.getSavedDraftType ? window.getSavedDraftType() : null;
       progressContainer.classList.add('hidden');
       appContent.innerHTML = `
         <div class="text-center py-4 fade-in">
@@ -270,7 +379,7 @@
           </h1>
           <p class="mt-3 text-sm sm:text-base text-slate-500 leading-relaxed break-keep">
             몇 가지 간단한 질문에 답하시면 교수님의 수업 방식에<br class="hidden sm:inline" />
-            가장 적합한 <strong class="text-gnu-charcoal">학습자 중심 수업 유형(6종)</strong>을 바로 찾아드립니다.
+            가장 적합한 <strong class="text-gnu-charcoal">학습자 중심 수업 유형(5종)</strong>을 바로 찾아드립니다.
           </p>
 
           <div class="mt-6 flex flex-wrap justify-center gap-1.5 max-w-sm mx-auto">
@@ -279,12 +388,19 @@
             <span class="text-xs font-semibold bg-slate-100 text-slate-600 px-2.5 py-1 rounded-md">IC-PBL</span>
             <span class="text-xs font-semibold bg-slate-100 text-slate-600 px-2.5 py-1 rounded-md">PjBL</span>
             <span class="text-xs font-semibold bg-slate-100 text-slate-600 px-2.5 py-1 rounded-md">IC-PjBL</span>
-            <span class="text-xs font-semibold bg-slate-100 text-slate-600 px-2.5 py-1 rounded-md">CD (캡스톤디자인)</span>
           </div>
 
           <button onclick="startQuiz()" class="mt-8 w-full sm:w-auto px-10 py-4 bg-gnu-sky hover:bg-gnu-dark text-white font-bold text-base rounded-2xl shadow-lg shadow-sky-200 transition-all transform hover:-translate-y-0.5 cursor-pointer">
             탐색 시작하기 →
           </button>
+
+          <div class="mt-8 pt-6 border-t border-slate-100 text-left">
+            <p class="text-xs font-bold text-slate-500 mb-2">유형을 이미 알고 계신가요? 바로 신청서를 작성할 수 있습니다.</p>
+            <div class="flex flex-wrap gap-1.5">
+              ${Object.entries(FORM_TYPES).map(([k, v]) => `<button onclick="openApplicationForm('${k}')" class="text-xs font-semibold border border-sky-200 text-gnu-dark hover:bg-gnu-light px-2.5 py-1.5 rounded-lg transition cursor-pointer">서식${v.formNo} ${v.code}</button>`).join('')}
+            </div>
+            ${savedType && FORM_TYPES[savedType] ? `<button onclick="openApplicationForm('${savedType}')" class="mt-3 text-sm font-bold text-gnu-sky hover:text-gnu-dark underline underline-offset-2 cursor-pointer">작성 중인 ${FORM_TYPES[savedType].code} 신청서 이어서 쓰기 →</button>` : ''}
+          </div>
         </div>
       `;
     }
@@ -404,7 +520,12 @@
             ${res.tip}
           </div>
 
-          <div class="mt-6 flex flex-col sm:flex-row gap-3">
+          ${isNone ? '' : `
+          <button onclick="openApplicationForm('${resultKey}')" class="mt-6 w-full py-4 px-4 rounded-2xl bg-gnu-charcoal hover:bg-slate-700 text-white font-bold text-base shadow-lg transition cursor-pointer">
+            ${res.code} 신청서(개발 및 운영계획서) 작성하기 →
+          </button>`}
+
+          <div class="mt-3 flex flex-col sm:flex-row gap-3">
             <button onclick="goBack()" class="flex-1 py-3.5 px-4 rounded-xl border border-slate-200 text-slate-600 font-bold text-sm hover:bg-slate-50 transition cursor-pointer">
               ← 이전 단계로
             </button>
