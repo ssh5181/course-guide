@@ -368,10 +368,48 @@
   }
 
   // ---------- 전체 화면 ----------
-  const NAV = [
-    ['sec-overview', 'Ⅰ. 개요'], ['sec-applicant', '신청자'], ['sec-basic', '가. 기본정보'], ['sec-eval', '나. 평가'],
-    ['sec-interaction', '다. 상호작용'], ['sec-weeks', '라. 진행계획'], ['sec-modules', '2. 모듈'], ['sec-check', '진단'],
+  // 작성 단계: 서식 순서를 따라 4묶음으로 나눈다
+  const STEPS = [
+    { title: '교과목 개요', desc: '개요 · 신청자', render: () => renderOverview() + renderApplicants() },
+    { title: '수업 설계', desc: '기본정보 · 평가 · 상호작용', render: () => renderBasic() + renderEval() + renderInteraction() },
+    { title: '수업 진행 계획', desc: '15주 진행표 · 모듈', render: () => renderWeeks() + renderModules() },
+    { title: '점검 및 내려받기', desc: '진단 · 미리보기 · hwpx', render: () => renderChecklist() + renderFinish() },
   ];
+  const STEP_KEY = 'lcc-application-step-v1';
+  let step = 0;
+  try { step = Math.min(STEPS.length - 1, Math.max(0, +localStorage.getItem(STEP_KEY) || 0)); } catch (e) { step = 0; }
+
+  function renderFinish() {
+    return `<section class="fsec finish">
+      <h3 class="fsec-title">마무리</h3>
+      <p class="fsec-sub">작성한 내용을 확인하고 한글(hwpx) 파일로 내려받으세요. 빠진 곳이 있으면 위의 단계 버튼을 눌러 언제든 돌아갈 수 있습니다.</p>
+      <div id="step-summary" class="step-summary"></div>
+      <div class="finish-btns">
+        <button type="button" class="btn-ghost lg" data-action="preview">초안 미리보기</button>
+        <button type="button" class="btn-primary lg" data-action="download-hwpx">hwpx 내려받기</button>
+      </div>
+    </section>`;
+  }
+
+  function renderStepper() {
+    return `<nav class="stepper" aria-label="작성 단계">${STEPS.map((st, i) => `
+      <button type="button" class="step-btn${i === step ? ' current' : ''}" data-action="go-step" data-index="${i}" ${i === step ? 'aria-current="step"' : ''}>
+        <span class="step-no" data-step-no="${i}">${i + 1}</span>
+        <span class="step-text"><span class="step-title">${esc(st.title)}</span><span class="step-desc">${esc(st.desc)}</span></span>
+      </button>`).join('<span class="step-line" aria-hidden="true"></span>')}</nav>`;
+  }
+
+  function renderStepNav() {
+    const prev = step > 0 ? `<button type="button" class="btn-ghost lg" data-action="go-step" data-index="${step - 1}">← 이전<span class="hide-sm">: ${esc(STEPS[step - 1].title)}</span></button>` : '<span></span>';
+    const next = step < STEPS.length - 1 ? `<button type="button" class="btn-primary lg" data-action="go-step" data-index="${step + 1}">다음<span class="hide-sm">: ${esc(STEPS[step + 1].title)}</span> →</button>` : '';
+    return `<div class="step-nav">${prev}${next}</div>`;
+  }
+
+  function goStep(i) {
+    step = Math.min(STEPS.length - 1, Math.max(0, i));
+    try { localStorage.setItem(STEP_KEY, String(step)); } catch (e) { /* 무시 */ }
+    renderForm(typeKey);
+  }
 
   function renderForm(key) {
     typeKey = key;
@@ -396,20 +434,18 @@
 
         <div class="guess-legend"><span class="guess">추정</span> 표시는 원본 서식에서 바로 읽히지 않아 웹 입력용으로 추정·보완한 부분입니다. 표시에 마우스를 올리거나 누르면 이유가 보입니다.</div>
 
-        <nav class="form-nav" aria-label="신청서 목차">${NAV.map(([id, l]) => `<a href="#${id}" data-nav="${id}">${l}</a>`).join('')}</nav>
+        <div class="stepper-wrap">
+          ${renderStepper()}
+          <div class="fill-meter"><div class="fill-bar"><div id="fill-bar" style="width:0%"></div></div><span id="fill-text">전체 작성률 0%</span></div>
+        </div>
 
-        <div class="fill-meter"><div class="fill-bar"><div id="fill-bar" style="width:0%"></div></div><span id="fill-text">작성률 0%</span></div>
+        <div class="step-head"><span class="step-kicker">STEP ${step + 1} / ${STEPS.length}</span><h3 class="step-heading">${esc(STEPS[step].title)}</h3></div>
 
         <form id="app-form" onsubmit="return false" novalidate>
-          ${renderOverview()}
-          ${renderApplicants()}
-          ${renderBasic()}
-          ${renderEval()}
-          ${renderInteraction()}
-          ${renderWeeks()}
-          ${renderModules()}
-          ${renderChecklist()}
+          ${STEPS[step].render()}
         </form>
+
+        ${renderStepNav()}
 
         <div class="form-footer">
           <span id="save-status" class="save-status">이 브라우저에 자동 저장됩니다.</span>
@@ -417,7 +453,7 @@
             <button type="button" class="btn-ghost" data-action="export-json">JSON 내보내기</button>
             <label class="btn-ghost cursor-pointer">JSON 불러오기<input type="file" accept="application/json,.json" id="import-json" class="hidden"/></label>
             <button type="button" class="btn-ghost danger" data-action="reset">모두 지우기</button>
-            <button type="button" class="btn-primary" data-action="preview">초안 미리보기</button>
+            <button type="button" class="btn-ghost" data-action="preview">초안 미리보기</button>
             <button type="button" class="btn-primary" data-action="download-hwpx">hwpx 내려받기</button>
           </div>
         </div>
@@ -452,29 +488,54 @@
     }).length;
   }
 
-  function fillRatio() {
+  // 단계별 [채운 수, 전체 수]
+  function stepProgress() {
     const t = T();
     const ov = data.overview;
-    const req = [ov.courseType, ov.grade, ov.size, ov.mode, ov.split, ov.dept, ov.nameKo, ov.credit, ov.objective, ov.need1, ov.need2, ov.need3, ov.need4,
-      data.applicants[0].name, data.applicants[0].affil, data.applicants[0].email, data.consent,
-      data.basic.purpose, data.basic.method, data.basic.participation, data.basic.team];
-    if (t.ic) req.push(data.basic.ic);
-    let filled = req.filter(v => String(v || '').trim()).length;
-    let total = req.length;
-    // 평가 2개, 진행계획(6주 이상), 상호작용, 모듈, 체크리스트
-    const ovSum = Object.values(data.evalOverall).reduce((a, b) => a + num(b), 0);
-    const dSum = (data.evalDetail[typeKey] || []).reduce((a, r) => a + num(r && r.pct), 0);
-    total += 6;
-    if (ovSum === 100) filled++;
-    if (dSum === 100) filled++;
-    if (lcWeekCount() >= 6) filled++;
-    if (data.interactions.tl.some(r => r.method.trim()) && data.interactions.ll.some(r => r.method.trim())) filled++;
+    const has = v => !!String(v || '').trim();
+    const a0 = data.applicants[0] || {};
+    const s1 = [ov.courseType, ov.grade, ov.size, ov.mode, ov.split, ov.dept, ov.nameKo, ov.credit, ov.objective, ov.need1, ov.need2, ov.need3, ov.need4,
+      a0.name, a0.affil, a0.email, data.consent].map(has);
+    const s2 = [data.basic.purpose, data.basic.method, data.basic.participation, data.basic.team].concat(t.ic ? [data.basic.ic] : []).map(has);
+    s2.push(Object.values(data.evalOverall).reduce((a, b) => a + num(b), 0) === 100);
+    s2.push((data.evalDetail[typeKey] || []).reduce((a, r) => a + num(r && r.pct), 0) === 100);
+    s2.push(data.interactions.tl.some(r => has(r.method)) && data.interactions.ll.some(r => has(r.method)));
     const mods = data.modules[t.moduleKind];
-    const modOk = mods.length >= t.minModules && mods.every(m => Object.values(m).some(v => typeof v === 'string' && v.trim()));
-    if (modOk) filled++;
+    const s3 = [lcWeekCount() >= 6, data.weeks.filter(w => has(w.content)).length >= 15,
+      mods.length >= t.minModules && mods.every(m => Object.values(m).some(v => typeof v === 'string' && v.trim()))];
     const ck = data.checklist[typeKey] || [];
-    if (t.checklist.every((_, i) => ck[i])) filled++;
+    const s4 = t.checklist.map((_, i) => !!ck[i]);
+    return [s1, s2, s3, s4].map(list => [list.filter(Boolean).length, list.length]);
+  }
+
+  function fillRatio() {
+    const sp = stepProgress();
+    const filled = sp.reduce((a, [f]) => a + f, 0);
+    const total = sp.reduce((a, [, n]) => a + n, 0);
     return Math.round((filled / total) * 100);
+  }
+
+  function paintSteps() {
+    const sp = stepProgress();
+    document.querySelectorAll('[data-step-no]').forEach(el => {
+      const i = +el.dataset.stepNo;
+      const done = sp[i][0] === sp[i][1];
+      el.classList.toggle('done', done);
+      el.textContent = done && i !== step ? '✓' : String(i + 1);
+      el.title = `${sp[i][0]} / ${sp[i][1]} 항목 작성`;
+    });
+    const sum = document.getElementById('step-summary');
+    if (sum) {
+      sum.innerHTML = STEPS.map((st, i) => {
+        const [f, n] = sp[i];
+        const ok = f === n;
+        return `<button type="button" class="sum-row" data-action="go-step" data-index="${i}">
+          <span class="sum-no ${ok ? 'done' : ''}">${ok ? '✓' : i + 1}</span>
+          <span class="sum-title">${esc(st.title)}</span>
+          <span class="sum-count ${ok ? 'ok' : ''}">${ok ? '작성 완료' : `${n - f}곳 남음`}</span>
+        </button>`;
+      }).join('');
+    }
   }
 
   function updateComputed() {
@@ -489,7 +550,8 @@
     const bar = document.getElementById('fill-bar');
     if (bar) bar.style.width = r + '%';
     const ft = document.getElementById('fill-text');
-    if (ft) ft.textContent = `작성률 ${r}%`;
+    if (ft) ft.textContent = `전체 작성률 ${r}%`;
+    paintSteps();
     document.querySelectorAll('[data-show-when]').forEach(el => {
       const rule = el.getAttribute('data-show-when');
       const neg = rule.includes('!=');
@@ -627,6 +689,7 @@
       case 'close-preview': closePreview(); return;
       case 'print-preview': window.print(); return;
       case 'download-hwpx': downloadHwpx(btn); return;
+      case 'go-step': goStep(i); return;
       case 'export-json': exportJson(); return;
       case 'reset':
         if (!confirmSoft(btn, '입력한 내용을 모두 지웁니다. 한 번 더 누르면 지워집니다.')) return;
@@ -717,7 +780,11 @@
   load();
 
   // 탐색기에서 쓰는 진입점
-  window.openApplicationForm = function (key) { renderForm(key); };
+  // resume=true 이면 마지막으로 보던 단계에서, 아니면 1단계부터 연다
+  window.openApplicationForm = function (key, resume) {
+    if (!resume) { step = 0; try { localStorage.setItem(STEP_KEY, '0'); } catch (e) { /* 무시 */ } }
+    renderForm(key);
+  };
   window.getCurrentDraft = function () { return { type: typeKey, data }; };
   window.getSavedDraftType = function () {
     try { const s = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null'); return s && s.type; } catch (e) { return null; }
